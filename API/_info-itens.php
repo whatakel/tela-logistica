@@ -16,7 +16,8 @@ $dataFinal = isset($_GET['DataFinal']) ? $_GET['DataFinal'] . ' 23:59:59' : null
 // Só faz a chamada à API se ambas as datas foram fornecidas
 if ($dataInicial && $dataFinal) {
     curl_setopt_array($curl, array(
-        CURLOPT_URL => $urlapi . "/pedidos/DataInicial>=" . urlencode($dataInicial) . "/DataFinal<=" . urlencode($dataFinal),
+        // CURLOPT_URL => $urlapi . "/pedidos/DataInicial>=" . urlencode($dataInicial) . "/DataFinal<=" . urlencode($dataFinal),
+        CURLOPT_URL => $urlapi . '/pedidos/DataInicial>=' . date('Y-m-d', strtotime('-1 day')),
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYHOST => 0,
         CURLOPT_SSL_VERIFYPEER => 0,
@@ -84,9 +85,44 @@ if ($dataInicial && $dataFinal) {
 $pedidos = $pedidos_abertos;
 $qtd_pedidos = count($pedidos);
 
-// echo '<pre>';
-// print_r($pedidos);
-// echo '</pre>';
+// Primeiro, vamos mostrar o array original
+//echo '<div style="font-family: Arial, sans-serif; padding: 20px;">';
+//echo '<h3>Array Original:</h3>';
+//echo '<pre>';
+//print_r($pedidos);
+//echo '</pre>';
+
+// Agora vamos agrupar e somar as quantidades
+$itens_agrupados = array();
+
+foreach ($pedidos as $item) {
+    $descricao = $item->Descricao;
+    $qtde = floatval($item->Qtde);
+    
+    if (!isset($itens_agrupados[$descricao])) {
+        $itens_agrupados[$descricao] = 0;
+    }
+    $itens_agrupados[$descricao] += $qtde;
+}
+
+// Mostrar o resultado agrupado
+//echo '<h3>Itens Agrupados por Descrição:</h3>';
+//echo '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+//echo '<tr style="background-color: #f2f2f2;">';
+//echo '<th>Descrição</th>';
+//echo '<th>Quantidade Total</th>';
+//echo '</tr>';
+
+//foreach ($itens_agrupados as $descricao => $quantidade) {
+//    echo '<tr>';
+//    echo '<td>' . htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8') . '</td>';
+//    echo '<td>' . number_format($quantidade, 4, ',', '.') . '</td>';
+//    echo '</tr>';
+//}
+
+//echo '</table>';
+//echo '</div>';
+
 // echo '<pre>';
 // var_dump($response);
 // echo '</pre>';

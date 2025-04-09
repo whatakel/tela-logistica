@@ -12,16 +12,31 @@ $itensAgrupados = [];
 
 // Só processa os pedidos se as datas foram fornecidas
 if (isset($_GET['DataInicial']) && isset($_GET['DataFinal'])) {
-    foreach ($pedidos as $pedido) {
-        // Remove espaços em branco nas pontas e normaliza o texto
-        $descricao = trim($pedido->Descricao);
-        $qtde = floatval($pedido->Qtde); // Garante que é número
+    // Usar os dados já processados em _info-itens.php
+    if (!empty($itens_agrupados)) {
+        foreach ($itens_agrupados as $descricao => $quantidade) {
+            $itensAgrupados[$descricao] = [
+                'descricao' => $descricao,
+                'quantidade' => $quantidade
+            ];
+        }
+    } else {
+        // Fallback para o processamento original caso $itens_agrupados esteja vazio
+        foreach ($pedidos as $pedido) {
+            // Remove espaços em branco nas pontas e normaliza o texto
+            $descricao = trim($pedido->Descricao);
+            $qtde = floatval($pedido->Qtde); // Garante que é número
 
-        // Soma as quantidades com base na descrição
-        if (isset($itensAgrupados[$descricao])) {
-            $itensAgrupados[$descricao] += $qtde;
-        } else {
-            $itensAgrupados[$descricao] = $qtde;
+            // Cria um nó para o produto se não existir
+            if (!isset($itensAgrupados[$descricao])) {
+                $itensAgrupados[$descricao] = [
+                    'descricao' => $descricao,
+                    'quantidade' => 0
+                ];
+            }
+            
+            // Soma a quantidade ao nó existente
+            $itensAgrupados[$descricao]['quantidade'] += $qtde;
         }
     }
 }
@@ -120,10 +135,10 @@ foreach ($resposta->data as $produto) {
                                             arsort($itensAgrupados);
 
                                             // Loop através dos itens agrupados
-                                            foreach ($itensAgrupados as $descricao => $quantidade) {
+                                            foreach ($itensAgrupados as $descricao => $item) {
                                                 echo "<tr>";
                                                 echo "<td>" . htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8') . "</td>";
-                                                echo "<td class='text-center'>" . number_format($quantidade, 2, ',', '.') . "</td>";
+                                                echo "<td class='text-center'>" . number_format($item['quantidade'], 2, ',', '.') . "</td>";
                                                 echo "</tr>";
                                             }
                                         } else {
