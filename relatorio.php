@@ -86,7 +86,7 @@ foreach ($resposta->data as $produto) {
         <div class="p-3">
             <div class="card-header bg-white border-0 p-0">
                 <div class="d-flex justify-content-between align-items-center p-3 my-3 border rounded">
-                    <h3 class="mb-0 text-primary">Histórico de Vendas</h3>
+                    <h3 class="mb-0 text-primary">Relatório saídas por período</h3>
                 </div>
 
                 <!-- Filtro de Datas -->
@@ -206,6 +206,17 @@ foreach ($resposta->data as $produto) {
 
             document.getElementById('dataFinal').addEventListener('click', function() {
                 this.showPicker();
+            });
+
+            // Adicionar evento de duplo clique para selecionar a data de hoje
+            document.getElementById('dataInicial').addEventListener('dblclick', function() {
+                this.value = hojeFormatado;
+                atualizarInformacaoPeriodo();
+            });
+
+            document.getElementById('dataFinal').addEventListener('dblclick', function() {
+                this.value = hojeFormatado;
+                atualizarInformacaoPeriodo();
             });
 
             // Adicionar validação para data final não ser menor que a inicial

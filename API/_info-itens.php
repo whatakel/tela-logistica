@@ -16,8 +16,8 @@ $dataFinal = isset($_GET['DataFinal']) ? $_GET['DataFinal'] . ' 23:59:59' : null
 // Só faz a chamada à API se ambas as datas foram fornecidas
 if ($dataInicial && $dataFinal) {
     curl_setopt_array($curl, array(
-        // CURLOPT_URL => $urlapi . "/pedidos/DataInicial>=" . urlencode($dataInicial) . "/DataFinal<=" . urlencode($dataFinal),
-        CURLOPT_URL => $urlapi . '/pedidos/DataInicial>=' . date('Y-m-d', strtotime('-1 day')),
+        // CURLOPT_URL => $urlapi . '/pedidos/DataInicial>=' . date('Y-m-d', strtotime('-1 day')),
+        CURLOPT_URL => $urlapi . "/pedidos/DataInicial>=" . urlencode($dataInicial) . "/DataFinal<=" . urlencode($dataFinal),
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYHOST => 0,
         CURLOPT_SSL_VERIFYPEER => 0,
@@ -86,11 +86,11 @@ $pedidos = $pedidos_abertos;
 $qtd_pedidos = count($pedidos);
 
 // Primeiro, vamos mostrar o array original
-//echo '<div style="font-family: Arial, sans-serif; padding: 20px;">';
-//echo '<h3>Array Original:</h3>';
-//echo '<pre>';
-//print_r($pedidos);
-//echo '</pre>';
+// echo '<div style="font-family: Arial, sans-serif; padding: 20px;">';
+// echo '<h3>Array Original:</h3>';
+// echo '<pre>';
+// print_r($pedidos);
+// echo '</pre>';
 
 // Agora vamos agrupar e somar as quantidades
 $itens_agrupados = array();
@@ -105,24 +105,41 @@ foreach ($pedidos as $item) {
     $itens_agrupados[$descricao] += $qtde;
 }
 
+// Calcular o total geral de todas as quantidades
+$total_geral = 0;
+foreach ($itens_agrupados as $quantidade) {
+    $total_geral += $quantidade;
+}
+
 // Mostrar o resultado agrupado
-//echo '<h3>Itens Agrupados por Descrição:</h3>';
-//echo '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-//echo '<tr style="background-color: #f2f2f2;">';
-//echo '<th>Descrição</th>';
-//echo '<th>Quantidade Total</th>';
-//echo '</tr>';
+// echo '<div style="font-family: Arial, sans-serif; padding: 20px;">';
+// echo '<h3>Total Geral de Quantidades: ' . number_format($total_geral, 4, ',', '.') . '</h3>';
+// echo '<h3>Itens Agrupados por Descrição:</h3>';
+// echo '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+// echo '<tr style="background-color: #f2f2f2;">';
+// echo '<th>Descrição</th>';
+// echo '<th>Quantidade Total</th>';
+// echo '</tr>';
 
-//foreach ($itens_agrupados as $descricao => $quantidade) {
-//    echo '<tr>';
-//    echo '<td>' . htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8') . '</td>';
-//    echo '<td>' . number_format($quantidade, 4, ',', '.') . '</td>';
-//    echo '</tr>';
-//}
+// foreach ($itens_agrupados as $descricao => $quantidade) {
+//     echo '<tr>';
+//     echo '<td>' . htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8') . '</td>';
+//     echo '<td>' . number_format($quantidade, 4, ',', '.') . '</td>';
+//     echo '</tr>';
+// }
 
-//echo '</table>';
-//echo '</div>';
+// echo '</table>';
+// echo '</div>';
 
 // echo '<pre>';
 // var_dump($response);
 // echo '</pre>';
+// echo '<pre>';
+// var_dump($response);
+// echo '</pre>';
+
+foreach($resposta->data as $produto){
+    echo '<pre>';
+    print_r($produto);
+    echo '</pre>';
+}
